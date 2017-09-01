@@ -52,43 +52,49 @@ class Funkcje:
             
     #--------------------------------------
     def rejestracja(self):
-        print("Wprowadz swoje dane do rejestracji: ")
+        print("Wprowadz dane do rejestracji: ")
+        conn = pymysql.connect("localhost", "root", "Hwdpik.hwdpik4", "event") #otwarcie poloczenia 
+        c = conn.cursor() 
         
-        #conection = MySqlConection('root','Hwdpik.hwdpik4')
-        
+
+    
         imie_u = input("Imie: ")
-        '''
-         #sprawdzanie podanego email
-         conn = pymysql.connect("localhost", "root", "Hwdpik.hwdpik4", "event") #otwarcie poloczenia 
-         c = conn.cursor() 
-         r = c.execute("select  imie_u, haslo from uzytkownik where imie_u = '"+login+"';")
-        if(r>0):
-        email = input('Wproadz adres email: ')
-        r = conection.c.execute("SELECT user_email FROM users WHERE user_email = '"+email+"';")
+        r = c.execute("SELECT imie_u FROM uzytkownik WHERE imie_u = '"+imie_u+"';")
         if(r != 0):# jeśli istnieje taki urzytkownik w bazie
-            print('ten adres email jest już zarejestrowany!')
-            conection.close()
-            self.registration()   
-        '''
-        #r = c.execute("SELECT imie_u FROM uzytkownik WHERE imie_u = '"+imie_u+"';")
+            print('Podany Login jest już zarezerwowany, uzyj innego. ')
+            conn.close()
+            self.rejestracja()
+            
         pseudo_u = input("Pseudonim: ") 
         sex_u = input("Plec k/m: ") 
+        while (sex_u != "k" and  sex_u !=  "m"):
+            print('>> Nieprawidlowa plec, wybierz (k/m) <<')
+            sex_u = input("Plec k/m: ") 
         kraj_u = input("Kraj: ") 
         woj_u = input("Wojewodztwo: ") 
+        
+        
         miasto_u = input("Miasto: ") 
         haslo = input("Haslo: ")    
+        haslo2 = input('Powtórz Hasło: ')
+        while(haslo != haslo2):
+            print('>> rozne hasla <<')
+            haslo = input("Haslo: ")    
+            haslo2 = input('Powtórz Hasło: ')            
+        
         conn = pymysql.connect("localhost", "root", "Hwdpik.hwdpik4", "event") #otwarcie poloczenia 
         c = conn.cursor()         
         c.execute("INSERT INTO uzytkownik (imie_u, pseudo_u, sex_u, kraj_u, woj_u, miasto_u, haslo) VALUES ('" + imie_u + "', '" + pseudo_u + "', '" + sex_u + "', '" + kraj_u + "', '" + woj_u + "', '" + miasto_u + "', '" + haslo + "');")
         conn.commit()
         conn.close()
-        print('sukces')        
-        
+        print('>> Zarejestrowano urzytkownika <<')        
+        return
     #--------------------------------
     #główna petla
     def start(self):
         s = ""
         while(s != "esc"): 
+            print(" ")
             print("(1) - Zaloguj \n(2) - Rejestracja \n(esc) - Koniec ")
             s = input()
         
